@@ -13,10 +13,10 @@
 - storing in the local storage
 
 ## Reference App Image
-![Todo App](./public/images/app.png)
+![Todo App](https://todo.manilee.site/images/app.png)
 
 ## Image with Alert message
-![Alert Message](./public/images/alert.png)
+![Alert Message](https://todo.manilee.site/images/alert.png)
 
 ## To run the Application
 - clone the git respository
@@ -24,8 +24,8 @@
 - npm start - to start the server
 
 ## Live Demo Link
-[![Todo App](./public/images/app.png)](https://todoappmanilee.site)
-        <https://todoapp.manilee.site>
+[![Todo App](https://todo.manilee.site/images/app.png)](https://todo.manilee.site)
+        <https://todo.manilee.site>
 
 
 
