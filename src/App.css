@@ -5,26 +5,27 @@
 }
 
 .App{
-  padding: 20px;
-  margin: auto;
-  margin-top: 40px;
-  max-width: 800px;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
- justify-content: space-evenly;
+  gap: 10px;
  background-color: #ebebeb;
 }
 
 .input__container{
-  text-align: center;
-  padding: 20px;
+  display: flex;
+  align-items: center;
+  padding: 10px;
 }
 
+.select{
+  padding: 5px 10px;
+  border: 1px solid #ebebeb;
+}
 
 @media (max-width: 600px) {
   .App{
-    padding: 10px;
     margin: auto;
   }
   .ant-table{

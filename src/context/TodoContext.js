@@ -1,52 +1,55 @@
+import axios from "axios";
 import { createContext, useEffect, useReducer } from "react";
-import {v4 as uuidv4} from "uuid"
-
-const getInitialTask = () => {
-    const localData = localStorage.getItem("tasks")
-    return localData ? JSON.parse(localData) : 
-    [{
-        id: uuidv4(),
-        name: "React Brush up",
-        isCompleted: false,
-        date: "27-09-2024"
-    }, {
-        id: uuidv4(),
-        name: "Explore AntD",
-        isCompleted: false,
-        date: "27-09-2024"
-    },
-    {
-        id: uuidv4(),
-        name: "Explore Jest and React Testing Library",
-        isCompleted: false,
-        date: "27-09-2024"
-    }]
-} 
+const URL = process.env.REACT_APP_API_URL;
 
 export const TodoContext = createContext()
 
 const todoReducer = (state,action)=>{
     switch(action.type){
+        case"SETNAMES" : return action.payload
         case "ADD":
             return [...state,action.payload]
-        case "EDIT":
-            return state.map(todo=> todo.id === action.payload.id ? {...todo, name: action.payload.name} : todo)
-        case "DELETE":
-            return state.filter(todo=>todo.id!==action.payload.id)
         default:
             return state
     }
 }
 
 export const TodoContextProvider = ({children}) => {
-   const [state,dispatch] = useReducer(todoReducer,[],getInitialTask)
+   const [state,dispatch] = useReducer(todoReducer,[])
+   
+   useEffect(()=>{
+    const fetchData = async () => {
+      try{
+        const response = await axios.get(URL)
+        dispatch({
+            type:"SETNAMES",
+            payload: response.data.data,
+        })
+      }
+      catch(err){
+        console.error(err.message)
+      }
+    };
+    fetchData();
+      
+  },[])
+
+   const addName = async (name,date) => {
+    try{
+        await axios.post(`${URL}add`,{name,date})
+        dispatch({type: "ADD", payload: {name,date}})
+    }
+    catch(err){
+        console.log(err.message)
+    }
+   }
 
    useEffect(()=>{
     localStorage.setItem("tasks",JSON.stringify(state))
-  },[state])
+  },[state,dispatch])
 
 return (
-    <TodoContext.Provider value={{state,dispatch}}>
+    <TodoContext.Provider value={{state,addName}}>
         {children}
     </TodoContext.Provider>
 )

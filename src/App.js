@@ -1,99 +1,53 @@
-import { useContext, useRef, useState } from 'react';
-import { v4 as uuidv4 } from "uuid"
-import {DeleteFilled , EditFilled} from "@ant-design/icons"
+import { useContext, useState } from 'react';
 import './App.css';
 import dayjs from "dayjs"
-import { Input, Table } from "antd"
+import { Table } from "antd"
 import { TodoContext } from './context/TodoContext';
+import dog from "./images/doggy.png"
 
 function App() {
-  const { state, dispatch } = useContext(TodoContext)
+  const { state, addName } = useContext(TodoContext)
   const [input, setInput] = useState("")
-  const [isEditing, setIsEditing] = useState(false)
-  const [editId, setEditId] = useState(null)
-  const handleEdit = (task) => {
-    setInput(task.name)
-    inputRef.current.focus();
-    setIsEditing(true)
-    setEditId(task.id)
-  }
-  const inputRef = useRef(null)
-  const isDuplicateTask = (name) => {
-    return state.some((task) => task.name.toLowerCase() === name.toLowerCase())
-  }
-  const handleKeydown = (e) => {
-    if (e.key === "Enter") {
+
+  const handleClick = (e) => {
       if (!input.trim()) return
-      if (isEditing) {
-        dispatch({
-          type: "EDIT",
-          payload: {
-            id: editId,
-            name: input
-          }
-        })
-        setIsEditing(false)
-        setEditId(null)
-        setInput("")
-        inputRef.current.blur()
-      }
-      else {
-        if(isDuplicateTask(input)){
-          alert("Task already exist")
-          setInput("")
-          return
-        }
-        dispatch({
-          type: "ADD", payload: {
-            id: uuidv4(),
-            name: input,
-            isCompleted: false,
-            date: dayjs().format("DD-MM-YYYY")
-          }
-        })
-        setInput("")
-      }
-    }
+      addName(input,dayjs().format("DD-MM-YYYY"))
+      setInput("")      
   }
-  const handleDelete = (task) => {
-    dispatch({ type: "DELETE", payload: task })
-  }
+
   const columns = [
     {
       title: 'ID',
       key: 'id',
-      render: (task)=> (<div>{task.id.substring(0,5) + "..."}</div>)
+      render: (text,record,index) => (<p>{index+1}</p>)
     },
     {
-      title: 'Task Name',
+      title: 'Yaaru Pottadhu',
       dataIndex: 'name',
       key: 'name',
     },
     {
-      title: 'Status',
-      dataIndex: 'isCompleted',
-      key: 'isCompleted',
-      render: (_, record) => (<p>{record.isCompleted ? "Completed" : "In Progress"}</p>)
-    },
-    {
       title: "Date",
-      dataIndex: "date"
+      dataIndex: "date",
+      key: "date"
     },
-    {
-      title: "Action",
-      render: (task) => (<div><span onClick={() => handleDelete(task)}><DeleteFilled/></span> <span onClick={() => handleEdit(task)}><EditFilled /></span></div>)
-    }
   ];
 
+  const options = ["Ajith","Mani","Arun(Walter)","Eaga","Abiyash","Shanmugam"]
+ 
 
   return (
     <div className="App">
-      <h2 style={{textAlign: "center"}}>Todo App</h2>
+      <img style={{marginTop: "20px"}} src="https://preview.redd.it/anna-yaru-v0-h5vkaa7wre9c1.jpeg?width=259&format=pjpg&auto=webp&s=ada08cbe59e18f89621c3c8e19ca7891dabc9a32" alt='thanni can'/>
       <div className='input__container'>
-        <Input placeholder="Add To do" ref={inputRef} value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeydown} />
+        <select className='select' value={input} onChange={(e)=>setInput(e.target.value)}>
+          <option value="" disabled>Select</option>
+          {options.map((op,i)=>(<option key={i} value={op}>{op}</option>))}
+        </select>
+        <img src={dog} alt="cheems" width="50px" onClick={handleClick} />
       </div>
 
-      <Table dataSource={state} columns={columns} pagination={{ pageSize: 5 }} />
+      <Table dataSource={state} columns={columns} pagination={{ pageSize: 9 }} />
 
     </div>
   );
